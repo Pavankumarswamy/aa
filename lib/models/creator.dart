@@ -7,6 +7,7 @@ class Creator {
   final String? name;
   final String? photoUrl;
   final String? bio;
+  final Map<String, String>? links;
 
   Creator({
     required this.userId,
@@ -15,6 +16,7 @@ class Creator {
     this.name,
     this.photoUrl,
     this.bio,
+    this.links,
   });
 
   /// Parse a single creator object from the backend JSON response.
@@ -24,6 +26,12 @@ class Creator {
       algoAddress: json['algoAddress'] as String,
       // Backend may return int or double; handle both gracefully.
       balance: (json['balance'] as num).toDouble(),
+      name: json['name'] as String?,
+      photoUrl: json['photoUrl'] as String?,
+      bio: json['bio'] as String?,
+      links: json['links'] != null
+          ? Map<String, String>.from(json['links'] as Map)
+          : null,
     );
   }
 
@@ -41,6 +49,7 @@ class Creator {
     String? name,
     String? photoUrl,
     String? bio,
+    Map<String, String>? links,
   }) {
     return Creator(
       userId: userId ?? this.userId,
@@ -49,6 +58,7 @@ class Creator {
       name: name ?? this.name,
       photoUrl: photoUrl ?? this.photoUrl,
       bio: bio ?? this.bio,
+      links: links ?? this.links,
     );
   }
 }

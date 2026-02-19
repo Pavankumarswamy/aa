@@ -9,6 +9,8 @@ import 'package:smartlearn/models/reel_model.dart';
 import 'package:smartlearn/models/post_model.dart';
 import 'package:smartlearn/models/course_model.dart';
 import 'package:smartlearn/screens/user/learning_feed_screen.dart';
+import 'package:smartlearn/screens/user/simple_video_player_screen.dart';
+import 'package:smartlearn/screens/user/simple_audio_player_screen.dart';
 import 'package:smartlearn/widgets/tip_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
@@ -29,6 +31,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   String _creatorName = '';
   String? _creatorPhotoUrl;
   String _creatorBio = 'Digital Creator | Educator';
+  Map<String, String>? _creatorLinks;
   int _postsCount = 0;
   int _coursesCount = 0;
   List<ReelModel> _reels = [];
@@ -40,11 +43,12 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _currentBalance = widget.creator.balance;
     _creatorName = widget.creator.name ?? widget.creator.userId;
     _creatorPhotoUrl = widget.creator.photoUrl;
     _creatorBio = widget.creator.bio ?? 'Digital Creator | Educator';
+    _creatorLinks = widget.creator.links;
     _creatorAlgoAddress = widget.creator.algoAddress;
 
     _fetchUserProfile();
@@ -73,6 +77,9 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
             _creatorName = data['name'] ?? widget.creator.userId;
             _creatorPhotoUrl = data['photoUrl'];
             _creatorBio = data['bio'] ?? 'Digital Creator | Educator';
+            _creatorLinks = data['links'] != null
+                ? Map<String, String>.from(data['links'] as Map)
+                : null;
             _creatorAlgoAddress =
                 data['algoAddress'] ?? widget.creator.algoAddress;
           });
@@ -84,18 +91,33 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
   }
 
   Future<void> _fetchCreatorStats() async {
-    try {
-      final database = FirebaseDatabase.instance.ref();
+    final database = FirebaseDatabase.instance.ref();
 
-      // Fetch Reels
+    // Fetch Courses first to ensure thumbnails are available for reels
+    try {
+      final creatorCourses = await _contentService.getCoursesByCreator(
+        widget.creator.userId,
+      );
+      if (mounted) {
+        setState(() {
+          _courses = creatorCourses;
+          _coursesCount = _courses.length;
+        });
+      }
+    } catch (e) {
+      print('Error fetching courses: $e');
+    }
+
+    // Fetch Reels
+    try {
       final reelsSnapshot = await database
           .child(AppConstants.reelsCollection)
           .orderByChild('createdBy')
           .equalTo(widget.creator.userId)
           .get();
 
-      final List<ReelModel> fetchedReels = [];
       if (reelsSnapshot.exists && reelsSnapshot.value != null) {
+        final List<ReelModel> fetchedReels = [];
         final Map<dynamic, dynamic> data = reelsSnapshot.value as Map;
         data.forEach((key, value) {
           fetchedReels.add(
@@ -106,29 +128,30 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
           );
         });
         fetchedReels.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        if (mounted) {
+          setState(() {
+            _reels = fetchedReels;
+            _postsCount = _reels.length + _allPosts.length;
+          });
+        }
       }
+    } catch (e) {
+      print('Error fetching reels: $e');
+    }
 
-      // Fetch Courses
-      final creatorCourses = await _contentService.getCoursesByCreator(
-        widget.creator.userId,
-      );
-
-      // Fetch Posts
+    // Fetch Posts
+    try {
       final creatorPosts = await _contentService.getPostsByCreator(
         widget.creator.userId,
       );
-
       if (mounted) {
         setState(() {
-          _reels = fetchedReels;
-          _courses = creatorCourses;
           _allPosts = creatorPosts;
           _postsCount = _reels.length + _allPosts.length;
-          _coursesCount = _courses.length;
         });
       }
     } catch (e) {
-      print('Error fetching creator stats: $e');
+      print('Error fetching posts: $e');
     }
   }
 
@@ -163,7 +186,6 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                 unselectedLabelColor: Colors.grey,
                 tabs: const [
                   Tab(text: 'Reels'),
-                  Tab(text: 'Courses'),
                   Tab(text: 'Gallery'),
                   Tab(text: 'Blogs'),
                   Tab(text: 'Music'),
@@ -176,7 +198,6 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
               controller: _tabController,
               children: [
                 _buildReelsGrid(),
-                _buildCoursesGrid(),
                 _buildGalleryGrid(),
                 _buildBlogsList(),
                 _buildMusicList(),
@@ -235,6 +256,11 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey[400], fontSize: 14),
           ),
+          if (_creatorLinks != null && _creatorLinks!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: _buildSocialLinksBar(),
+            ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -301,6 +327,49 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
     });
   }
 
+  Widget _buildSocialLinksBar() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: _creatorLinks!.entries.map((link) {
+          IconData icon;
+          final title = link.key.toLowerCase();
+          if (title.contains('twitter') || title.contains('x.com')) {
+            icon = Icons.alternate_email;
+          } else if (title.contains('linkedin')) {
+            icon = Icons.business;
+          } else if (title.contains('youtube')) {
+            icon = Icons.video_library;
+          } else if (title.contains('github')) {
+            icon = Icons.code;
+          } else if (title.contains('instagram')) {
+            icon = Icons.camera_alt;
+          } else {
+            icon = Icons.link;
+          }
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ActionChip(
+              backgroundColor: Colors.blueAccent.withOpacity(0.1),
+              side: BorderSide(color: Colors.blueAccent.withOpacity(0.3)),
+              avatar: Icon(icon, size: 16, color: Colors.blueAccent),
+              label: Text(
+                link.key,
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              onPressed: () {
+                // In a real app, use url_launcher
+                print('Opening ${link.value}');
+              },
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   Widget _buildStatItem(String label, String value) {
     return Column(
       children: [
@@ -332,6 +401,10 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
       itemCount: _reels.length,
       itemBuilder: (context, index) {
         final reel = _reels[index];
+        final courseThumb = _courses.any((c) => c.id == reel.courseId)
+            ? _courses.firstWhere((c) => c.id == reel.courseId).thumbnailUrl
+            : reel.thumbnailUrl;
+
         return InkWell(
           onTap: () {
             Navigator.push(
@@ -352,7 +425,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
               fit: StackFit.expand,
               children: [
                 CachedNetworkImage(
-                  imageUrl: reel.thumbnailUrl ?? '',
+                  imageUrl: courseThumb ?? '',
                   fit: BoxFit.cover,
                   placeholder: (context, url) =>
                       Container(color: Colors.grey[900]),
@@ -365,52 +438,6 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                 ),
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCoursesGrid() {
-    if (_courses.isEmpty) return _buildEmptyState('No courses yet');
-
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: _courses.length,
-      itemBuilder: (context, index) {
-        final course = _courses[index];
-        return Card(
-          color: Colors.grey[900],
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: CachedNetworkImage(
-                  imageUrl: course.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  course.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
           ),
         );
       },
@@ -483,6 +510,32 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
     );
   }
 
+  void _playMedia(PostModel post) {
+    if (post.type == 'video') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SimpleVideoPlayerScreen(
+            videoUrl: post.content,
+            title: post.title,
+          ),
+        ),
+      );
+    } else if (post.type == 'audio') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SimpleAudioPlayerScreen(
+            audioUrl: post.content,
+            title: post.title,
+            coverUrl: post.thumbnailUrl,
+            createdAt: post.createdAt,
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _buildMusicList() {
     final music = _allPosts
         .where((p) => p.type == 'audio' || p.type == 'video')
@@ -494,16 +547,72 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
       itemCount: music.length,
       itemBuilder: (context, index) {
         final item = music[index];
-        return ListTile(
-          leading: const Icon(
-            Icons.play_circle_fill,
-            color: Colors.blueAccent,
-            size: 40,
-          ),
-          title: Text(item.title, style: const TextStyle(color: Colors.white)),
-          subtitle: Text(
-            DateFormat('MMM dd, yyyy').format(item.createdAt),
-            style: TextStyle(color: Colors.grey[600]),
+        return Card(
+          color: Colors.grey[900],
+          margin: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(12),
+            leading: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8),
+                    image: item.thumbnailUrl.isNotEmpty
+                        ? DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              item.thumbnailUrl,
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: item.thumbnailUrl.isEmpty
+                      ? Icon(
+                          item.type == 'video'
+                              ? Icons.videocam
+                              : Icons.music_note,
+                          color: Colors.grey[600],
+                        )
+                      : null,
+                ),
+                Icon(
+                  Icons.play_circle_fill,
+                  color: Colors.white.withOpacity(0.8),
+                  size: 30,
+                ),
+              ],
+            ),
+            title: Text(
+              item.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                Text(
+                  item.type == 'video' ? 'Video' : 'Audio',
+                  style: TextStyle(color: Colors.blueAccent[100], fontSize: 12),
+                ),
+                Text(
+                  DateFormat('MMM dd, yyyy').format(item.createdAt),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+              ],
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey,
+              size: 16,
+            ),
+            onTap: () => _playMedia(item),
           ),
         );
       },

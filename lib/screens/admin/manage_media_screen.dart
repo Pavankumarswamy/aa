@@ -110,6 +110,7 @@ class _ManageMediaScreenState extends State<ManageMediaScreen> {
 
                         if (file != null) {
                           setDialogState(() => isUploading = true);
+
                           final result = await (type == 'image'
                               ? _cloudinaryService.uploadImage(File(file.path))
                               : _cloudinaryService.uploadVideo(
@@ -136,12 +137,14 @@ class _ManageMediaScreenState extends State<ManageMediaScreen> {
                 TextField(
                   controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title'),
+                  onChanged: (_) => setDialogState(() {}),
                 ),
                 if (type == 'blog')
                   TextField(
                     controller: contentController,
                     decoration: const InputDecoration(labelText: 'Content'),
                     maxLines: 5,
+                    onChanged: (_) => setDialogState(() {}),
                   ),
               ],
             ),
@@ -155,6 +158,7 @@ class _ManageMediaScreenState extends State<ManageMediaScreen> {
               onPressed:
                   (isUploading ||
                       titleController.text.isEmpty ||
+                      (type == 'blog' && contentController.text.isEmpty) ||
                       (type != 'blog' && mediaUrl == null))
                   ? null
                   : () async {

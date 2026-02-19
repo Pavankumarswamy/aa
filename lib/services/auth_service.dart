@@ -126,38 +126,37 @@ class AuthService {
       );
 
       // Check if user document exists
-      DatabaseEvent event = await _database
+      final snapshot = await _database
           .child(AppConstants.usersCollection)
           .child(userCredential.user!.uid)
-          .once();
+          .get();
 
-      if (event.snapshot.value == null) {
-        // Create new user document
+      if (!snapshot.exists) {
+        // Create new user document only if they don't exist
         UserModel newUser = UserModel(
           uid: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
           role: userCredential.user!.email == 'chkaluda@gmail.com'
               ? AppConstants.roleAdmin
               : AppConstants.roleUser,
-          preferredLanguage:
-              'English', // Default, will be set during onboarding
+          preferredLanguage: 'English',
           createdAt: DateTime.now(),
           lastLoginAt: DateTime.now(),
+          name: userCredential.user!.displayName,
+          photoUrl: userCredential.user!.photoURL,
         );
 
         await _database
             .child(AppConstants.usersCollection)
             .child(newUser.uid)
             .set(newUser.toMap());
-
         return newUser;
       } else {
-        // Update last login time
+        // Just update last login time to avoid clearing bio, etc.
         await _database
             .child(AppConstants.usersCollection)
             .child(userCredential.user!.uid)
             .update({'lastLoginAt': DateTime.now().millisecondsSinceEpoch});
-
         return await getUserData(userCredential.user!.uid);
       }
     } catch (e) {

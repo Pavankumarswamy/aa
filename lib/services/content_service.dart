@@ -86,7 +86,7 @@ class ContentService {
 
   Future<void> createPost(PostModel post) async {
     try {
-      final newRef = _database.child('posts').push();
+      final newRef = _database.child(AppConstants.postsCollection).push();
       final postWithId = PostModel(
         id: newRef.key!,
         creatorId: post.creatorId,
@@ -108,7 +108,7 @@ class ContentService {
   }) async {
     try {
       final snapshot = await _database
-          .child('posts')
+          .child(AppConstants.postsCollection)
           .orderByChild('creatorId')
           .equalTo(creatorId)
           .get();
@@ -117,7 +117,10 @@ class ContentService {
 
       final Map<dynamic, dynamic> values = snapshot.value as Map;
       List<PostModel> posts = values.entries.map((e) {
-        return PostModel.fromMap(Map<String, dynamic>.from(e.value), e.key);
+        final Map<String, dynamic> data = Map<String, dynamic>.from(
+          e.value as Map,
+        );
+        return PostModel.fromMap(data, e.key.toString());
       }).toList();
 
       if (type != null) {
@@ -134,7 +137,10 @@ class ContentService {
 
   Future<void> deletePost(String postId) async {
     try {
-      await _database.child('posts').child(postId).remove();
+      await _database
+          .child(AppConstants.postsCollection)
+          .child(postId)
+          .remove();
     } catch (e) {
       throw Exception('Failed to delete post: $e');
     }

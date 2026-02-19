@@ -45,6 +45,9 @@ class _CreatorsScreenState extends State<CreatorsScreen> {
                 name: userData['name'],
                 photoUrl: userData['photoUrl'],
                 bio: userData['bio'],
+                links: userData['links'] != null
+                    ? Map<String, String>.from(userData['links'] as Map)
+                    : null,
               ),
             );
           } else {
