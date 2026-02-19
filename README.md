@@ -11,7 +11,7 @@
   - *Description*: Current online learning platforms suffer from a monetization gap for educators, lack of transparency in tippng, and low learner engagement. SmartLearn solves this by combining **NVIDIA AI-generated** gaming content with a seamless **Algorand on-chain tipping** mechanism.
 - **App ID (Testnet)**: `755781369`
 - **Explorer Link**: [Pera Explorer (Testnet)](https://testnet.explorer.perawallet.app/application/755781369)
-- **Live Demo (Frontend)**: [SmartLearn Web Demo](https://smartlearn-demo.example.com) *(Replace with actual hosted URL)*
+- **Live Demo (Frontend)**: [SmartLearn Web Demo](https://pavankumarswamy.github.io/aa/)
 - **Live Demo (Backend)**: [TipJar Backend (HF Spaces)](https://shesettipavankumarswamy-tipjarbackend.hf.space)
 - **LinkedIn Demo Video**: [Watch the Demo on LinkedIn](https://www.linkedin.com/company/rift-pwioi/) *(Replace with actual video link)*
 
@@ -146,9 +146,9 @@ flutter run
 
 ---
 
-## 👥 Team Members
+## 👥 Team: Apex Achievers
 
-- **[Your Name]**: Full-Stack Development, Smart Contract Architect, AI Integration.
+- **Manoj Kumar** (Team Lead): Full-Stack Development, Smart Contract Architect, AI Integration.
 - **RIFT 2026 Team**: Supporting Mentors & Organizers.
 
 ---

@@ -1,0 +1,9 @@
+# Environment Variables for Smart Learn
+
+# Cloudinary Configuration
+CLOUDINARY_URL=cloudinary://329847156871146:rGSoq7yNxFpu8uIp0BSTU_Qwhaw@dch7dy48a
+CLOUDINARY_CLOUD_NAME=dch7dy48a
+CLOUDINARY_API_KEY=329847156871146
+CLOUDINARY_API_SECRET=rGSoq7yNxFpu8uIp0BSTU_Qwhaw
+CLOUDINARY_UPLOAD_PRESET=ml_default
+NV_API_KEY=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

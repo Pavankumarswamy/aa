@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartlearn/firebase_options.dart';
@@ -14,11 +15,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment variables
-  await dotenv.load(fileName: ".env");
-
-  // Initialize Firebase with options
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await dotenv.load(fileName: "assets/env");
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyCslYu-CaVgLVG8UbtjdrVnqk6PezYm0bk",
+        authDomain: "smartlearn-143.firebaseapp.com",
+        databaseURL: "https://smartlearn-143-default-rtdb.firebaseio.com",
+        projectId: "smartlearn-143",
+        storageBucket: "smartlearn-143.firebasestorage.app",
+        messagingSenderId: "801360190913",
+        appId: "1:801360190913:web:c1d22aa4518a007b396340",
+      ),
+    );
+  } else {
+    // Initialize Firebase with options
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   runApp(const MyApp());
 }
 
