@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile, admins can read all
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      
+      // Users can create their own profile during signup
+      allow create: if isAuthenticated() && isOwner(userId);
+      
+      // Users can update their own profile, but cannot change role
+      allow update: if isOwner(userId) && 
+                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // Reels collection - Admin only write, all authenticated users can read
+    match /reels/{reelId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Games collection - Admin only write, all authenticated users can read
+    match /games/{gameId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // User Progress - Users can only read/write their own progress
+    match /userProgress/{userId}/{progressId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Badges - Admin write, all authenticated users can read
+    match /badges/{badgeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Certificates - Public read for sharing, users can create their own
+    match /certificates/{certificateId} {
+      allow read: true; // Public for sharing via links
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // Certificate Templates - Admin only write, authenticated users can read
+    match /certificateTemplates/{templateId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Analytics - Admin only
+    match /analytics/{document=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

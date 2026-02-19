@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "801360190913",
+    "firebase_url": "https://smartlearn-143-default-rtdb.firebaseio.com",
+    "project_id": "smartlearn-143",
+    "storage_bucket": "smartlearn-143.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801360190913:android:3bd92375b61fac08396340",
+        "android_client_info": {
+          "package_name": "com.cetnext.smartlearn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801360190913-9uh5drpp64iqrdk69r1svdnusuf2r36j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAds-m-bsc4_eEWLhCeMg_AwCZHHWiJbLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801360190913-9uh5drpp64iqrdk69r1svdnusuf2r36j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
