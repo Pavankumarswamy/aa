@@ -49,6 +49,23 @@ graph TD
 
 ---
 
+## 📸 App Screenshots
+
+<div align="center">
+  <img src="screenshots/img1.jpeg" width="200" alt="App Screen 1" />
+  <img src="screenshots/img2.jpeg" width="200" alt="App Screen 2" />
+  <img src="screenshots/img3.jpeg" width="200" alt="App Screen 3" />
+  <img src="screenshots/img4.jpeg" width="200" alt="App Screen 4" />
+</div>
+<div align="center">
+  <img src="screenshots/img5.jpeg" width="200" alt="App Screen 5" />
+  <img src="screenshots/img6.jpeg" width="200" alt="App Screen 6" />
+  <img src="screenshots/img7.jpeg" width="200" alt="App Screen 7" />
+  <img src="screenshots/img8.jpeg" width="200" alt="App Screen 8" />
+</div>
+
+---
+
 ## 🛠️ Tech Stack & Backend Services
 
 | Layer | Technology |
