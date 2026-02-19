@@ -53,8 +53,8 @@ graph TD
 
 <div align="center">
   <img src="screenshots/img10.png" width="200" alt="App Screen 1" />
-  <img src="screenshots/img2.jpeg" width="200" alt="App Screen 2" />
-  <img src="screenshots/img3.jpeg" width="200" alt="App Screen 3" />
+  <img src="screenshots/img2.png" width="200" alt="App Screen 2" />
+  <img src="screenshots/img3.png" width="200" alt="App Screen 3" />
   <img src="screenshots/img4.jpeg" width="200" alt="App Screen 4" />
 </div>
 <div align="center">
