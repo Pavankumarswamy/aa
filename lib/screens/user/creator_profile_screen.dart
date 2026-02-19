@@ -547,6 +547,9 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
       itemCount: music.length,
       itemBuilder: (context, index) {
         final item = music[index];
+        final hasThumbnail =
+            item.thumbnailUrl != null && item.thumbnailUrl!.isNotEmpty;
+
         return Card(
           color: Colors.grey[900],
           margin: const EdgeInsets.only(bottom: 12),
@@ -561,16 +564,16 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen>
                   decoration: BoxDecoration(
                     color: Colors.grey[800],
                     borderRadius: BorderRadius.circular(8),
-                    image: item.thumbnailUrl.isNotEmpty
+                    image: hasThumbnail
                         ? DecorationImage(
                             image: CachedNetworkImageProvider(
-                              item.thumbnailUrl,
+                              item.thumbnailUrl!,
                             ),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
-                  child: item.thumbnailUrl.isEmpty
+                  child: !hasThumbnail
                       ? Icon(
                           item.type == 'video'
                               ? Icons.videocam
