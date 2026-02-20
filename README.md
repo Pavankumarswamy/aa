@@ -14,7 +14,7 @@
 
 - **Live Demo (Frontend)**: [SmartLearn App Demo](https://drive.google.com/file/d/1K2jMFAziFwaN1GloT3-1QjRpEtNAldFs/view?usp=sharing)
 
-- **Live Demo (Backend)**: [TipJar Backend (HF Spaces)](https://shesettipavankumarswamy-tipjarbackend.hf.space)
+- **Live Demo (Backend)**: [TipJar Backend (HF Spaces)](https://huggingface.co/spaces/shesettipavankumarswamy/tipjarbackend/blob/main/README.md)
 
 - **LinkedIn Demo Video**: [Watch the Demo on LinkedIn](https://www.linkedin.com/posts/pavankumarswamy-sheshetti-12b129253_rift2026-algorand-algokit-ugcPost-7430402137982943232-39vs)
 ---
