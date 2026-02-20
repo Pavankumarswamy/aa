@@ -11,9 +11,9 @@
   - *Description*: Current online learning platforms suffer from a monetization gap for educators, lack of transparency in tippng, and low learner engagement. SmartLearn solves this by combining **NVIDIA AI-generated** gaming content with a seamless **Algorand on-chain tipping** mechanism.
 - **App ID (Testnet)**: `755781369`
 - **Explorer Link**: [Pera Explorer (Testnet)](https://testnet.explorer.perawallet.app/application/755781369)
-- **Live Demo (Frontend)**: [SmartLearn Web Demo](https://pavankumarswamy.github.io/aa/)
+- **Live Demo (Frontend)**: [SmartLearn App Demo]([https://pavankumarswamy.github.io/aa/](https://drive.google.com/file/d/1K2jMFAziFwaN1GloT3-1QjRpEtNAldFs/view?usp=sharing))
 - **Live Demo (Backend)**: [TipJar Backend (HF Spaces)](https://shesettipavankumarswamy-tipjarbackend.hf.space)
-- **LinkedIn Demo Video**: [Watch the Demo on LinkedIn](https://www.linkedin.com/company/rift-pwioi/) *(Replace with actual video link)*
+- **LinkedIn Demo Video**: [Watch the Demo on LinkedIn]([https://www.linkedin.com/company/rift-pwioi/](https://www.linkedin.com/posts/pavankumarswamy-sheshetti-12b129253_rift2026-algorand-algokit-ugcPost-7430402137982943232-39vs?utm_source=social_share_send&utm_medium=android_app&rcm=ACoAAD59G3MBYnfR2PWYjbEFr2n-xw0h20Fxsnk&utm_campaign=whatsapp)) *(Replace with actual video link)*
 
 ---
 
@@ -148,7 +148,10 @@ flutter run
 
 ## 👥 Team: Apex Achievers
 
-- **Manoj Kumar** (Team Lead): Full-Stack Development, Smart Contract Architect, AI Integration.
+- **Manoj Kumar** (Team Lead)
+- **YogaVinay**
+- **Pavan** 
+- **Pavankumarswamy** 
 - **RIFT 2026 Team**: Supporting Mentors & Organizers.
 
 ---
